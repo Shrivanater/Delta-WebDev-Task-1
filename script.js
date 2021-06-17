@@ -20,8 +20,12 @@ let go = 0;
 
 let score = 0;
 let highScore = 0;
-document.getElementById("scoreboard").innerHTML = `Score: 0`;
-document.getElementById("highScore").innerHTML = `High Score: 0`;
+let sec = 0;
+let bestTime = 0;
+
+document.getElementById("scoreboard").innerHTML = `No. of Moves: 0`;
+document.getElementById("highScore").innerHTML = `Least Moves Taken: `;
+document.getElementById("bestTime").innerHTML = `Best Time: `;
 
 let ul = document.querySelectorAll("li");;
 
@@ -35,8 +39,6 @@ const colors1= ["Red", "Red", "Red", "Red",
                 "Orange", "Orange", "Orange", "Orange", 
                 "Magenta", "Magenta", "Magenta", "Magenta",
                 "Black"]
-
-
 
 let ul2 = document.querySelectorAll('.target > li');;
 const colors2= ["Red", "Red", "Red", "Red", 
@@ -71,41 +73,25 @@ function sound(src) {
     }
 }
 
-function getTimeRemaining(endtime) {
-    const total = Date.parse(endtime) - Date.parse(new Date());
-    const seconds = Math.floor((total / 1000) % 60);
-    const minutes = Math.floor((total / 1000 / 60) % 60);
-    
-    return {
-        total, minutes, seconds
-    };
-
-}
-
 function initializeClock(id, endtime) {
     clock = document.getElementById(id);
     minutesSpan = clock.querySelector('.minutes');
     secondsSpan = clock.querySelector('.seconds');
 
     function updateClock() {
-        const t = getTimeRemaining(endtime);
         
         if(go === 0){
-            minutesSpan.innerHTML = ('02');
+            minutesSpan.innerHTML = ('00');
             secondsSpan.innerHTML = ('00');
             clearInterval(timeinterval);
         }
 
         if(go === 1){
-            minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-            secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+            minutesSpan.innerHTML = ('0' + parseInt(sec / 60)).slice(-2);
+            secondsSpan.innerHTML = ('0' + (sec % 60)).slice(-2);
         }
 
-        if (t.total <= 0) {
-            clearInterval(timeinterval);
-            alert("Time's Up!!");
-            reset();
-        }
+        sec++;
     }
 
     updateClock();
@@ -115,7 +101,8 @@ function initializeClock(id, endtime) {
 function reset(){
     go = 0;
     score = 0;
-    document.getElementById("scoreboard").innerHTML = `Score: 0`;
+    sec = 0;
+    document.getElementById("scoreboard").innerHTML = `No. of Moves: 0`;
 
     jumbled1 = jumble(colors1);
 
@@ -130,6 +117,20 @@ function reset(){
     });
 
     updateClock();
+}
+
+function swapTile(tile, x) {
+    score++;
+    document.getElementById("scoreboard").innerHTML = `No. of Moves: ${score}`;
+
+    let blackTile = document.getElementById(parseInt(tile.id) + x);
+    blackTile.style.backgroundColor = tile.style.backgroundColor;
+    tile.style.backgroundColor = "black";
+    
+    let temp = jumbled1[parseInt(tile.id)];
+    jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
+    jumbled1[parseInt(blackTile.id)] = temp;
+    tileMoveSound.play();
 }
 
 function play(){
@@ -152,413 +153,102 @@ function play(){
         //CORNERS
         if(tile.id === '0'){
             if(document.getElementById(parseInt(tile.id) + 1).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 1);
             }
-            if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+            if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){                
+                swapTile(tile, 5);
             }
         }
 
         if(tile.id === '4'){
-            if(document.getElementById(parseInt(tile.id) - 1).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
+            if(document.getElementById(parseInt(tile.id) - 1).style.backgroundColor === "black"){                
+                swapTile(tile, -1);
             }
-            if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
+            if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){                
+                swapTile(tile, 5);
             }
         }
 
         if(tile.id === '20'){
             if(document.getElementById(parseInt(tile.id) + 1).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 1);
             }
             if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -5);
             }
         }
 
         if(tile.id === '24'){
             if(document.getElementById(parseInt(tile.id) - 1).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -1);
             }
             if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -5);
             }
         }
 
         //EDGES
         if(tile.id === '1' || '2' || '3'){
             if(document.getElementById(parseInt(tile.id) + 1).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 1);
             }
             if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 5);
             }
             if(document.getElementById(parseInt(tile.id) - 1).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -1);
             }
         }
 
         if(tile.id === '5' || '10' || '15'){
             if(document.getElementById(parseInt(tile.id) + 1).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 1);
             }
             if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 5);
             }
             if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -5);
             }
         }
 
         if(tile.id === '9' || '14' || '19'){
             if(document.getElementById(parseInt(tile.id) - 1).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -1);
             }
             if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 5);
             }
-            if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+            if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){                
+                swapTile(tile, -5);
             }
         }
 
         if(tile.id === '21' || '22' || '23'){
             if(document.getElementById(parseInt(tile.id) + 1).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-                tile.style.backgroundColor = "black";
-
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 1)
             }
             if(document.getElementById(parseInt(tile.id) - 1).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -1);
             }
-            if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){
-                
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+            if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){                
+                swapTile(tile, -5);
             }
         }
 
         //INNER
         else{
             if(document.getElementById(parseInt(tile.id) + 1).style.backgroundColor === "black"){
-
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 1);
             }
             if(document.getElementById(parseInt(tile.id) + 5).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) + 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, 5);
             }
             if(document.getElementById(parseInt(tile.id) - 1).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 1);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -1);
             }
             if(document.getElementById(parseInt(tile.id) - 5).style.backgroundColor === "black"){
-
-                score++;
-                console.log(score);
-                document.getElementById("scoreboard").innerHTML = `Score: ${score}`;
-
-                let blackTile = document.getElementById(parseInt(tile.id) - 5);
-                blackTile.style.backgroundColor = tile.style.backgroundColor;
-
-                tile.style.backgroundColor = "black";
-                let temp = jumbled1[parseInt(tile.id)];
-                jumbled1[parseInt(tile.id)] = jumbled1[parseInt(blackTile.id)];
-                jumbled1[parseInt(blackTile.id)] = temp;
-                tileMoveSound.play();
-
+                swapTile(tile, -5);
             }
         }
 
@@ -569,7 +259,11 @@ function play(){
             victorySound.play(); 
             if((score < highScore) || (highScore === 0)){
                 highScore = score;
-                document.getElementById("highScore").innerHTML = `High Score: ${highScore}`;     
+                document.getElementById("highScore").innerHTML = `Least Moves Taken: ${highScore}`;
+            }
+            if((sec < bestTime) || (bestTime === 0)){ 
+                bestTime = sec;
+                document.getElementById("bestTime").innerHTML = `Best Time:  ${parseInt(sec/60)}:${sec%60}`;    
             }
             alert("You Win!!!");   
             reset();
