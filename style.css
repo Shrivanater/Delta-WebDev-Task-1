@@ -93,7 +93,16 @@ h1 {
     color: white;
     font-size: 30px;
     left: 108px;
-    top: 400px;
+    top: 450px;
+}
+
+#bestTime {
+    position: absolute;
+    font-family: Comic;
+    color: white;
+    font-size: 30px;
+    left: 108px;
+    top: 500px;
 }
 
 .board {
@@ -108,7 +117,6 @@ h1 {
     background: black;
     width: 88px;
     height: 88px;
-    /* border: 1px solid black; */
     margin-top: 10px;
     padding-top: 3rem;
 }
@@ -154,7 +162,7 @@ h1 {
 	padding: 15px;
 	border-radius: 3px;
 	background: rgb(0, 0, 0);
-  border: 1px solid black;
+    border: 1px solid black;
 	position: absolute;
 }
 
